@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmFlix - Your Movie Review Destination</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add Font Awesome for stars -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Background snow effect */
+        body {
+            background-image: url('https://www.w3schools.com/w3images/snow.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .card-body {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+        }
+
+        .modal-content {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+        }
+
+        .footer {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .search-bar {
+            font-size: 1.2rem;
+            padding: 10px;
+            border-radius: 30px;
+        }
+
+        .search-bar:focus {
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        #button-search {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 30px;
+            margin-left: 10px;
+            border: none;
+        }
+
+        .navbar-brand {
+            font-size: 2rem !important;
+            font-weight: bold;
+            color: #fff !important;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .film-card {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .film-card:hover {
+            transform: scale(1.05);
+        }
+
+        .modal-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background-color: #2d6ac5;
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        #modal-description {
+            font-size: 1.25rem;
+        }
+
+        #reviews-list p {
+            font-size: 1.1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .card-text {
+            font-size: 1.2rem;
+        }
+
+        .review {
+            margin-bottom: 20px;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .star-rating {
+            margin-top: 5px;
+        }
+
+        .star-rating i {
+            font-size: 1.2rem;
+        }
+
+        /* Styling for all reviews section */
+        #reviews-section {
+            display: none;
+        }
+
+        .review-card {
+            background-color: rgba(0, 0, 0, 0.6);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">FilmFlix Review</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#home" id="home-button">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="reviews-link">Reviews</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Genres
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="genre-dropdown">
+                            <li><a class="dropdown-item" href="#" data-genre="Action">Action</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Comedy">Comedy</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Drama">Drama</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Horror">Horror</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Romance">Romance</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Sci-Fi">Sci-Fi</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Thriller">Thriller</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Fantasy">Fantasy</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Mystery">Mystery</a></li>
+                            <li><a class="dropdown-item" href="#" data-genre="Documentary">Documentary</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Bar -->
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control search-bar" placeholder="Search for movies..."
+                        aria-label="Search for movies" aria-describedby="button-search">
+                    <button class="btn btn-primary" type="button" id="button-search">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Film Cards -->
+<main class="container mt-5">
+    <h2 class="text-center mb-4">Top Rated Films</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="film-list">
+        <!-- Film Cards -->
+        <div class="col film-card" data-genre="Horror" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="The Conjuring" data-bs-description="A chilling horror film about paranormal investigators."
+            data-bs-reviews="Alice, 5, Terrifying atmosphere; John, 4, Great performances; Sam, 3, A true horror masterpiece"
+            data-bs-genre="Horror" data-bs-actors="Vera Farmiga, Patrick Wilson" data-bs-rating="7.5/10">
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/id/1/1f/Conjuring_poster.jpg" class="card-img-top"
+                    alt="The Conjuring">
+                <div class="card-body">
+                    <h5 class="card-title">The Conjuring</h5>
+                    <p class="card-text">Horror | 7.5/10</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col film-card" data-genre="Action, Sci-Fi" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="Inception" data-bs-description="A mind-bending thriller where dreams are manipulated for corporate espionage."
+            data-bs-reviews="Mark, 5, Brilliant concept; Sarah, 4, Visually stunning; Dan, 4, Keeps you thinking"
+            data-bs-genre="Sci-Fi" data-bs-actors="Leonardo DiCaprio, Tom Hardy" data-bs-rating="8.8/10">
+            <div class="card">
+                <img src="https://play-lh.googleusercontent.com/buKf27Hxendp3tLNpNtP3E-amP0o4yYV-SGKyS2u-Y3GdGRTyfNCIT5WAVs2OudOz6so5K1jtYdAUKI9nw8" class="card-img-top"
+                    alt="Inception">
+                <div class="card-body">
+                    <h5 class="card-title">Inception</h5>
+                    <p class="card-text">Sci-Fi | 8.8/10</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col film-card" data-genre="Drama, Romance" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="The Notebook" data-bs-description="A timeless love story that will melt your heart."
+            data-bs-reviews="Emma, 5, Beautifully emotional; Jake, 4, A romantic classic"
+            data-bs-genre="Romance" data-bs-actors="Ryan Gosling, Rachel McAdams" data-bs-rating="7.8/10">
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/en/8/86/Posternotebook.jpg" class="card-img-top"
+                    alt="The Notebook">
+                <div class="card-body">
+                    <h5 class="card-title">The Notebook</h5>
+                    <p class="card-text">Romance | 7.8/10</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col film-card" data-genre="Action" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="Mad Max: Fury Road" data-bs-description="A high-octane thrill ride in a dystopian desert wasteland."
+            data-bs-reviews="Chris, 5, Pure adrenaline; Laura, 4, Stunning visuals; Matt, 5, A masterpiece of action"
+            data-bs-genre="Action" data-bs-actors="Tom Hardy, Charlize Theron" data-bs-rating="8.1/10">
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/en/6/6e/Mad_Max_Fury_Road.jpg" class="card-img-top"
+                    alt="Mad Max: Fury Road">
+                <div class="card-body">
+                    <h5 class="card-title">Mad Max: Fury Road</h5>
+                    <p class="card-text">Action | 8.1/10</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="filmModal" tabindex="-1" aria-labelledby="filmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filmModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="filmModalImage" src="" alt="" class="img-fluid mb-3">
+                <p id="filmModalDescription"></p>
+                <p><strong>Genre:</strong> <span id="filmModalGenre"></span></p>
+                <p><strong>Actors:</strong> <span id="filmModalActors"></span></p>
+                <p><strong>Rating:</strong> <span id="filmModalRating"></span></p>
+                <h6>User Reviews:</h6>
+                <div id="filmModalReviews" class="reviews-container">
+                    <!-- Reviews will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Review Bubbles -->
+<style>
+    .review-bubble {
+        background-color: #21467e;
+        border-radius: 15px;
+        padding: 10px;
+        margin: 10px 0;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    .review-bubble strong {
+        color: #ede5e5;
+    }
+    .star {
+        color: gold;
+        font-size: 1rem;
+    }
+</style>
+
+<!-- JavaScript -->
+<script>
+    const filmCards = document.querySelectorAll('.film-card');
+    filmCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const title = card.getAttribute('data-bs-title');
+            const description = card.getAttribute('data-bs-description');
+            const genre = card.getAttribute('data-bs-genre');
+            const actors = card.getAttribute('data-bs-actors');
+            const rating = card.getAttribute('data-bs-rating');
+            const reviews = card.getAttribute('data-bs-reviews');
+            const imageSrc = card.querySelector('img').getAttribute('src');
+
+            document.getElementById('filmModalLabel').innerText = title;
+            document.getElementById('filmModalDescription').innerText = description;
+            document.getElementById('filmModalGenre').innerText = genre;
+            document.getElementById('filmModalActors').innerText = actors;
+            document.getElementById('filmModalRating').innerText = rating;
+            document.getElementById('filmModalImage').src = imageSrc;
+
+            const reviewsContainer = document.getElementById('filmModalReviews');
+            reviewsContainer.innerHTML = '';
+
+            // Parse and insert reviews dynamically with star ratings
+            const reviewList = reviews.split(';');
+            reviewList.forEach(review => {
+                const [user, stars, comment] = review.split(',').map(item => item.trim());
+                const reviewBubble = document.createElement('div');
+                reviewBubble.classList.add('review-bubble');
+                let starIcons = '★'.repeat(parseInt(stars)).padEnd(5, '☆');
+                reviewBubble.innerHTML = `<strong>${user}</strong> <span class="star">${starIcons}</span><br>${comment}`;
+                reviewsContainer.appendChild(reviewBubble);
+            });
+        });
+    });
+</script>
+
+        <!-- All Reviews Section -->
+        <div id="reviews-section">
+            <h2 class="text-center">All Reviews</h2>
+            <div id="reviews-list"></div>
+        </div>
+    </main>
+
+    <!-- Film Modal -->
+    <div class="modal fade" id="filmModal" tabindex="-1" aria-labelledby="filmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filmModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-description"></p>
+                    <div id="reviews-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer py-3">
+        <div class="container text-center">
+            <p>&copy; 2024 FilmFlix. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Add Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const genreItems = document.querySelectorAll('.dropdown-item');
+            const filmCards = document.querySelectorAll('.film-card');
+            const homeButton = document.getElementById('home-button');
+            const reviewsLink = document.getElementById('reviews-link');
+            const reviewsSection = document.getElementById('reviews-section');
+            const reviewsList = document.getElementById('reviews-list');
+
+            genreItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const selectedGenre = e.target.getAttribute('data-genre');
+                    filmCards.forEach(card => {
+                        const cardGenres = card.getAttribute('data-genre').split(', ');
+                        if (cardGenres.includes(selectedGenre)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            homeButton.addEventListener('click', () => {
+                filmCards.forEach(card => {
+                    card.style.display = 'block';
+                });
+                reviewsSection.style.display = 'none';
+            });
+
+            reviewsLink.addEventListener('click', () => {
+                reviewsSection.style.display = 'block';
+                filmCards.forEach(card => card.style.display = 'none');
+                reviewsList.innerHTML = '';
+                const reviews = [
+                    { movie: 'The Conjuring', user: 'Alice', rating: 5, review: 'Terrifying atmosphere' },
+                    { movie: 'The Conjuring', user: 'John', rating: 4, review: 'Great performances' },
+                    { movie: 'The Conjuring', user: 'Sam', rating: 3, review: 'A true horror masterpiece' }
+                ];
+
+                reviews.forEach(r => {
+                    const reviewCard = document.createElement('div');
+                    reviewCard.classList.add('review-card');
+                    reviewCard.innerHTML = `
+                        <div class="user-name">${r.user}</div>
+                        <div class="star-rating">
+                            ${'<i class="fas fa-star text-warning"></i>'.repeat(r.rating)}
+                            ${'<i class="fas fa-star text-muted"></i>'.repeat(5 - r.rating)}
+                        </div>
+                        <p><strong>${r.movie}</strong>: ${r.review}</p>
+                    `;
+                    reviewsList.appendChild(reviewCard);
+                });
+            });
+
+            filmCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const title = e.currentTarget.getAttribute('data-bs-title');
+                    const description = e.currentTarget.getAttribute('data-bs-description');
+                    const reviews = e.currentTarget.getAttribute('data-bs-reviews');
+                    const genre = e.currentTarget.getAttribute('data-bs-genre');
+                    const rating = e.currentTarget.getAttribute('data-bs-rating');
+
+                    const modalTitle = document.querySelector('.modal-title');
+                    const modalDescription = document.getElementById('modal-description');
+                    const modalReviews = document.getElementById('reviews-list');
+
+                    modalTitle.textContent = title;
+                    modalDescription.textContent = description;
+
+                    modalReviews.innerHTML = '';
+
+                    const reviewArray = reviews.split('; ');
+                    reviewArray.forEach(r => {
+                        const [user, rating, review] = r.split(', ');
+                        const reviewElement = document.createElement('div');
+                        reviewElement.classList.add('review');
+                        reviewElement.innerHTML = `
+                            <div class="user-name">${user}</div>
+                            <div class="star-rating">
+                                ${'<i class="fas fa-star text-warning"></i>'.repeat(Number(rating))}
+                                ${'<i class="fas fa-star text-muted"></i>'.repeat(5 - Number(rating))}
+                            </div>
+                            <p>${review}</p>
+                        `;
+                        modalReviews.appendChild(reviewElement);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
